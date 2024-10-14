@@ -1,1 +1,34 @@
-Hola
+1. Descripción del objetivo:
+
+¿Qué es?: Explicar de forma clara qué hace la herramienta y para qué se usará.
+Ejemplo:
+"El objetivo de esta herramienta es predecir la demanda de productos en una tienda usando datos históricos de ventas. Esto permitirá a los gerentes planificar mejor el inventario y evitar quedarse sin stock."
+Consejo: Sé directo y menciona cómo esta herramienta será útil para el negocio (predecir la demanda para gestionar el inventario).
+
+2. Descripción de los requisitos funcionales:
+
+¿Qué es?: Definir las funcionalidades principales que la herramienta debe tener.
+Ejemplo:
+Los usuarios deben poder cargar datos históricos de ventas (en formato CSV o Excel).
+La herramienta debe generar predicciones de la demanda para un período futuro (por ejemplo, una semana o un mes).
+Debe mostrar las predicciones en un gráfico simple para facilitar su visualización.
+Debe permitir exportar las predicciones a un archivo para poder compartirlo o revisarlo más tarde.
+Consejo: Incluye las funciones esenciales para una herramienta sencilla de predicción.
+
+3. Identificación de las restricciones:
+
+¿Qué es?: Definir las limitaciones o condiciones que deben tener en cuenta al desarrollar la herramienta.
+Ejemplo: 
+La predicción debe ser sencilla y rápida, enfocándose solo en tendencias generales.
+La herramienta solo funcionará con datos de ventas diarios.
+No se requieren predicciones complejas, solo una aproximación usando un modelo básico (como regresión lineal o media móvil).
+Consejo: Enfócate en las limitaciones del proyecto, como que los datos sean simples o que el modelo no tenga que ser demasiado preciso.
+
+4. Investigación básica:
+
+¿Qué es?: Una investigación rápida sobre herramientas y métodos que pueden utilizar para construir la herramienta.
+Ejemplo: 
+Investigar modelos de predicción básicos, como la regresión lineal o el promedio móvil, que son fáciles de implementar. 
+Explorar cómo cargar y manipular archivos CSV o Excel en Python usando bibliotecas como pandas. 
+Investigar bibliotecas de gráficos simples como Matplotlib o Seaborn para visualizar las predicciones.
+Consejo: Mantén la investigación sencilla, enfocada en herramientas fáciles de usar para una predicción simple.
