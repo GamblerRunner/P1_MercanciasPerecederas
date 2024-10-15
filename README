@@ -26,6 +26,14 @@ La herramienta solo funcionará con datos de ventas diarios.
 No se requieren predicciones complejas, solo una aproximación usando un modelo básico (como regresión lineal o media móvil).
 Consejo: Enfócate en las limitaciones del proyecto, como que los datos sean simples o que el modelo no tenga que ser demasiado preciso.
 
+Durante el desarrollo de la herramenta debemos tener en cuenta los siguientes puntos:
+-La fecha de los pedidos ya que cada usuario deberia poder ver el registro/monitorización de cada pedido.
+-El estado meteorológico de las zonas donde va a tener que atravesar la entrega
+-Tamaño del camión a la vez el tamaño del tanque de la gasolina.
+-Analisis del peligro y puntos criticos en las rutas.
+-Tiempo estimado de entrega, ya que cada cliente y repartidor le gustaria saber el tiempo mínimo/máximo que tardara en llegar.
+-
+
 4. Investigación básica:
 
 ¿Qué es?: Una investigación rápida sobre herramientas y métodos que pueden utilizar para construir la herramienta.
