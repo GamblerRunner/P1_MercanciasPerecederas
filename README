@@ -32,7 +32,11 @@ Durante el desarrollo de la herramenta debemos tener en cuenta los siguientes pu
 -Tamaño del camión a la vez el tamaño del tanque de la gasolina.
 -Analisis del peligro y puntos criticos en las rutas.
 -Tiempo estimado de entrega, ya que cada cliente y repartidor le gustaria saber el tiempo mínimo/máximo que tardara en llegar.
--
+-Usabilidad y accesibilidad. Estó significa que tenemos que hacer una interfaz intuitiva, facil de usar para los usuarios.
+-Seguridad de datos ya que la protección de información sensible es de total importancia, especialmente si contienen información 
+sobre proveedores, clientes o trazabilidad de los productos. 
+-Backup. Hay que considerar que cualquier momento podría ocurrir un error capaz de eliminar toda la informacion y una manipulación 
+erronea de ella. Se necesita copias de seguridad ante fallos para garantizar la continuidad del negocio.
 
 4. Investigación básica:
 
