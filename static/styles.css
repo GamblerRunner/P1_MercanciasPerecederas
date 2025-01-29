@@ -1,0 +1,63 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f8ff;
+    color: #333;
+}
+
+h1 {
+    font-size: 3rem;
+    color: #4a90e2;
+    text-align: center;
+    margin-top: 20px;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+ul li {
+    margin: 0 15px;
+}
+
+a {
+    text-decoration: none;
+    font-size: 1.5rem;
+    color: #4a90e2;
+    border: 2px solid #4a90e2;
+    border-radius: 10px;
+    padding: 10px 20px;
+    transition: all 0.3s ease;
+}
+
+a:hover {
+    background-color: #4a90e2;
+    color: #fff;
+}
+
+button {
+    font-size: 2rem;
+    padding: 10px 30px;
+    border: none;
+    border-radius: 10px;
+    background-color: #4a90e2;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background-color: #357ab8;
+}
+
+td {
+    white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+    text-overflow: ellipsis; /* Muestra "..." si el texto es demasiado largo */
+    overflow: hidden;
+    max-width: 200px; /* Opcional: límite máximo para las celdas */
+}

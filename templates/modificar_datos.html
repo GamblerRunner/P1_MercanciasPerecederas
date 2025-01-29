@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modificar Datos - {{ filename }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+    
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+            color: #444;
+            font-size: 24px; /* Tamaño de la cabecera */
+        }
+    
+        .container {
+            width: 90%;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+    
+        .table-container {
+            width: 100%;
+            overflow-x: auto; /* Habilita scroll horizontal */
+            margin-top: 20px;
+        }
+    
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed; /* Celdas proporcionales */
+        }
+    
+        table th, table td {
+            text-align: left;
+            padding: 8px; /* Reduce el padding para compactar */
+            border: 1px solid #ddd;
+            word-wrap: break-word; /* Ajusta texto largo */
+            font-size: 12px; /* Tamaño más pequeño para el texto */
+        }
+    
+        table th {
+            background-color: #007bff;
+            color: white;
+            font-size: 11px; /* Cabeceras ligeramente más grandes */
+        }
+    
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    
+        table tr:hover {
+            background-color: #f1f1f1;
+        }
+    
+        input[type="text"] {
+            width: 100%;
+            border: none;
+            background-color: transparent;
+            font-size: 12px; /* Texto más pequeño en las celdas */
+            padding: 4px;
+            box-sizing: border-box;
+        }
+    
+        input[type="text"]:focus {
+            outline: none;
+            background-color: #f9f9f9;
+        }
+    
+        .button {
+            display: inline-block;
+            padding: 8px 16px; /* Botones más pequeños */
+            font-size: 14px; /* Tamaño del texto en los botones */
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            text-align: center;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+    
+        .button:hover {
+            background-color: #0056b3;
+        }
+    
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+    
+    
+</head>
+<body>
+    <h1>Modificar Datos del Archivo: {{ filename }}</h1>
+    <div class="container">
+        <form action="{{ url_for('modificar_datos', filename=filename) }}" method="POST">
+            <table>
+                <thead>
+                    <tr>
+                        {% for col in columns %}
+                            <th>{{ col }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in data %}
+                        <tr>
+                            {% for col in columns %}
+                                <td>
+                                    <input type="text" name="data[{{ row.index }}][{{ col }}]" value="{{ row[col] }}">
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="button-container">
+                <button type="submit" class="button">Guardar Cambios</button>
+                <a href="{{ url_for('ver_datos', filename=filename) }}" class="button">Volver atrás</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
