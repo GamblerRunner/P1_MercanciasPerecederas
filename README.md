@@ -7,9 +7,9 @@ Esta herramienta será útil para el negocio ya que podrá minimizar costes de r
 La herramienta será desarrollada con inteligencia artificial tanto para la predicción de demanda como para la eficiencia de rutas.
 
 ## Configuración y ejecución del proyecto
-Para ejecutar este proyecto lo primero que se debe hacer es descargar el repositorio para tenerlo en local. Descomprimirlo con algun programa para ello y una vez se tienen las carpetas de una forma accesible hay 2 formas de lanzarlo.
-Antes de poder lanzar los notebooks se deben tener descargadas las diferentes librerias usadas en el proyecto, estas librerias y sus versiones estan escritas en el archivo requirements.txt
-La primera sería abrir los notebooks que estan en la carpeta Notebooks/modeling_final, cada notebook contiene uno de los casos a resolver en el proyecto. Abre el que quieras probar y dale al boton de run all.
+Para ejecutar este proyecto lo primero que se debe hacer es descargar el repositorio para tenerlo en local. Descomprimirlo con algun programa para ello y una vez se tienen las carpetas de una forma accesible hay 2 formas de lanzarlo.  
+Antes de poder lanzar los notebooks se deben tener descargadas las diferentes librerias usadas en el proyecto, estas librerias y sus versiones estan escritas en el archivo requirements.txt  
+La primera sería abrir los notebooks que estan en la carpeta Notebooks/modeling_final, cada notebook contiene uno de los casos a resolver en el proyecto. Abre el que quieras probar y dale al boton de run all.  
 La segunda forma seria lanzar la página web creada para visualizar el proyecto, para lanzar la página debes usar el archivo .... y una vez puedas entrar a la página verás 4 botones, uno para cada caso del proyecto, y si clickas en esos botones verás la solucion al caso despues de unos segundos.
 
 ## Estructura del proyecto
