@@ -16,16 +16,22 @@ La segunda forma seria lanzar la página web creada para visualizar el proyecto,
 El proyecto está dividido en diferentes carpetas y archivos que guardan desde los datos para entrenar y probar los modelos, la documentación y los diferentes archivos con código sobre modelos.
 - Carpeta Datos_P1:   
     Carpeta que contiene los diferentes archivos .csv que aportan los datos principalmente para la generación del rutas eficientes.
-    > No se si tengo que explicar aqui los datos de cada archivo
+    Los contenidos de cada archivo de datos junto con su desglose están en la documentación del proyecto.  
 - Carpeta Documentación:  
     En esta carpeta están los archivos de documentación del proyecto como el analisis de los datos y el pdf de documentación general con la descripción de la tecnologias, analisis de las tecnologias de IA usadas y demás detalles tecnicos.
 - Carpeta Notebooks:  
     En esta carpeta tenemos una imagen png con las localizaciones de los clientes en un mapa basado en los datos de localización que hay en uno de los archivos .csv.
     * Carpeta data_analyze: 
         Esta subcarpeta contiene un notebook con el analisis y representación de los datos del proyecto en diferentes gráficas y matrices de correlación.
-    * Carpeta modeling: 
+    * Carpeta modeling_final:
+        En esta carpeta están los notebooks con los que hemos acabado resolviendo los casos pedidos, estos notebooks deberían estar explicados en la documentación y con comentarios dentro de ellos. 
+    * Carpeta modeling_pruebas: 
         Subcarpeta donde hemos estado guardando los diferentes notebooks con los modelos que hemos estado probando para la creación de rutas eficientes. 
-        > No se si esto lo tendré que cambiar cuando metamos los notebooks finales o si tengo que explicar el contenido de los notebooks.
+- Carpetas de la página web:
+    * Carpeta templates:
+        En esta carpeta están los diferentes archivos .html que conforman la página web.
+    * Carpeta static:
+        En esta carpeta y las que haya dentro estan datos estaticos que se usarán en la visualización de la página web, desde los estilos de la página hasta los excels de datos para poder mostrarlos.
 - Archivo README.md:  
     Archivo que estas leyendo ahora mismo con la explicación de lo que hace el proyecto, la configuración y ejecución y la estrcutura de las carpetas del proyecto.
 - Archivo requirements.txt:   
