@@ -111,7 +111,7 @@ def solucion_Vehiculo(df_distances, df_vehicles_shuffled, orders,pheromone_matri
 def ACO(caso, df_distances, df_vehicles, df_customers):
     # Parámetros de ACO
     num_vehiculos = 6
-    num_iterations = 100
+    num_iterations = 300
     rho = 0.5
     Q = 100
 

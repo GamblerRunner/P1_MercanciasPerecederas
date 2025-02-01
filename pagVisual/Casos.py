@@ -83,6 +83,8 @@ def caso_3(df_order_historic_demand):
 
 
 def caso_4(df_vehicles):
-    return df_vehicles.sample(n=1)
-
-
+    df_vehicles = df_vehicles.sample(n=1, random_state=42) 
+    df_vehicles['autonomia_km'] = [10000]
+    df_vehicles['costo_km'] = [0.55]
+    
+    return df_vehicles
