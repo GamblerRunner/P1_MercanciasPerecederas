@@ -1,9 +1,8 @@
 from flask import Flask, render_template, redirect, url_for, request
 import os
 import pandas as pd
-import osmnx as ox
 import folium
-import Casos as c
+import Notebooks.modeling_final.Casos as c
 import chardet
 import numpy as np
 import random
@@ -104,9 +103,9 @@ def modificar_datos(filename):
         print(e)
         return render_template('error.html', message=f"Ocurrió un error al procesar el archivo: {str(e)}")
 
-@app.route('/apartado1')
-def apartado1():
-    # Localizacion de cada cliente
+
+def generar_casos(caso=1):
+        # Localizacion de cada cliente
     file_path = "static/excels/df_location.xlsx"  # Asegúrate de colocar tu archivo Excel aquí
     df = pd.read_excel(file_path)
 
@@ -127,7 +126,7 @@ def apartado1():
     start_location = coordenadas_clientes.get(20, list(coordenadas_clientes.values())[0])
     m = folium.Map(location=start_location, zoom_start=13)
 
-    resultado = c.start_df()
+    resultado = c.start_df(caso = caso)
     if resultado is None:
         raise ValueError("La función ACO devolvió None")
     rutas, coste_total = resultado
@@ -162,15 +161,13 @@ def apartado1():
     map_path = "static/map.html"
     m.save(map_path)
 
-    rutas_salida = []
-
     salida_rutas = ""
     #Lo dejamos bonicos las rutas
     for transporte in rutas:
         id_vehiculo = int(transporte[0])  
         salida_rutas += f"<h3>Vehículo {transporte}</h3>\n<ul>\n" 
 
-        for i, ruta in enumerate(vehiculo[1]):
+        for i, ruta in enumerate(transporte[1]):
             ruta_formateada = f"Ruta {i + 1}: {' -> '.join(map(str, ruta))}"
             salida_rutas += f"  <li>{ruta_formateada}</li>\n"  
 
@@ -180,242 +177,34 @@ def apartado1():
 
     resultados = {
         "costes": f"{coste_total}€",
-        "iteraciones": 50,
+        "iteraciones": 100,
         "rutas": salida_rutas,  
         "Modelo_mejor_resultado": "ACO",
     }
 
+    return resultados, map_path
+
+
+@app.route('/apartado1')
+def apartado1():
+    resultados, map_path = generar_casos()
     return render_template('caso1.html', titulo="Caso 1", map_file=map_path, resultados=resultados)
 
 
 @app.route('/apartado2')
 def apartado2():
-    file_path = "static/excels/df_location.xlsx"  
-    df = pd.read_excel(file_path)
-
-    df.columns = df.columns.str.strip()
-
-    coordenadas_clientes = {
-        int(row["Cliente"].replace("Cliente_", "")) - 1: (row["Latitud"], row["Longitud"])
-        for _, row in df.iterrows() if isinstance(row["Cliente"], str) and "Cliente_" in row["Cliente"]
-    }
-
-    # Agregar el almacén con clave 20
-    almacen = df[df["Cliente"] == "Almacén"][["Latitud", "Longitud"]].values
-    if len(almacen) > 0:
-        coordenadas_clientes[20] = tuple(almacen[0])  
-
-    # Usar la ubicación del almacén como centro del mapa
-    start_location = coordenadas_clientes.get(20, list(coordenadas_clientes.values())[0])
-    m = folium.Map(location=start_location, zoom_start=13)
-
-    resultado = c.start_df(caso = 2)
-    if resultado is None:
-        raise ValueError("La función ACO devolvió None")
-    rutas, coste_total = resultado
-
-    # Mostramos las distintas rutas que va tener el mapa
-    for vehiculo, rutas_por_vehiculo in rutas:
-        for ruta in rutas_por_vehiculo:
-            ruta = [cliente for cliente in ruta if cliente != 0]  # REVISION
-            coordenadas = [coordenadas_clientes.get(cliente, start_location) for cliente in ruta]
-
-            # Color aleatorio por ruta
-            color = "#{:06x}".format(random.randint(0, 0xFFFFFF))
-            folium.PolyLine(coordenadas, color=color, weight=2.5, opacity=0.8).add_to(m)
-
-    # Agregar marcadores de clientes y almacén
-    for cliente, coords in coordenadas_clientes.items():
-        if cliente == 20:
-            nombre = "Almacén"
-            color = "red"  
-        else:
-            nombre = f"Cliente {cliente + 1}"  
-            color = "blue"  
-        
-        folium.Marker(
-            location=coords,
-            popup=nombre,
-            icon=folium.Icon(color=color, icon="info-sign"),
-        ).add_to(m)
-
-    # Guardar el mapa
-    map_path = "static/map.html"
-    m.save(map_path)
-
-    salida_rutas = ""
-    #Lo dejamos bonicos las rutas
-    for transporte in rutas:
-        id_vehiculo = int(transporte[0])  
-        salida_rutas += f"<h3>Vehículo {transporte}</h3>\n<ul>\n" 
-
-        for i, ruta in enumerate(vehiculo[1]):
-            ruta_formateada = f"Ruta {i + 1}: {' -> '.join(map(str, ruta))}"
-            salida_rutas += f"  <li>{ruta_formateada}</li>\n"  
-
-        salida_rutas += "</ul>\n"  
-
-    coste_total = round(coste_total, 2)
-
-    resultados = {
-        "costes": f"{coste_total}€",
-        "iteraciones": 50,
-        "rutas": salida_rutas,  
-        "Modelo_mejor_resultado": "ACO",
-    }
-
-    return render_template('caso2.html', titulo="Caso 1", map_file=map_path, resultados=resultados)
+    resultados, map_path = generar_casos(caso = 2)
+    return render_template('caso2.html', titulo="Caso 2", map_file=map_path, resultados=resultados)
 
 @app.route('/apartado3')
 def apartado3():
-    file_path = "static/excels/df_location.xlsx"  
-    df = pd.read_excel(file_path)
-
-    df.columns = df.columns.str.strip()
-
-    coordenadas_clientes = {
-        int(row["Cliente"].replace("Cliente_", "")) - 1: (row["Latitud"], row["Longitud"])
-        for _, row in df.iterrows() if isinstance(row["Cliente"], str) and "Cliente_" in row["Cliente"]
-    }
-
-    almacen = df[df["Cliente"] == "Almacén"][["Latitud", "Longitud"]].values
-    if len(almacen) > 0:
-        coordenadas_clientes[20] = tuple(almacen[0])  
-
-    start_location = coordenadas_clientes.get(20, list(coordenadas_clientes.values())[0])
-    m = folium.Map(location=start_location, zoom_start=13)
-
-    resultado = c.start_df(caso = 3)
-    if resultado is None:
-        raise ValueError("La función ACO devolvió None")
-    rutas, coste_total = resultado
-
-
-    for vehiculo, rutas_por_vehiculo in rutas:
-        for ruta in rutas_por_vehiculo:
-            ruta = [cliente for cliente in ruta if cliente != 0]  # REVISION
-            coordenadas = [coordenadas_clientes.get(cliente, start_location) for cliente in ruta]
-
-            color = "#{:06x}".format(random.randint(0, 0xFFFFFF))
-            folium.PolyLine(coordenadas, color=color, weight=2.5, opacity=0.8).add_to(m)
-
-    for cliente, coords in coordenadas_clientes.items():
-        if cliente == 20:
-            nombre = "Almacén"
-            color = "red"  
-        else:
-            nombre = f"Cliente {cliente + 1}"  
-            color = "blue"  
-        
-        folium.Marker(
-            location=coords,
-            popup=nombre,
-            icon=folium.Icon(color=color, icon="info-sign"),
-        ).add_to(m)
-
-    # Guardar el mapa
-    map_path = "static/map.html"
-    m.save(map_path)
-
-    salida_rutas = ""
-    #Lo dejamos bonicos las rutas
-    for transporte in rutas:
-        id_vehiculo = int(transporte[0])  
-        salida_rutas += f"<h3>Vehículo {transporte}</h3>\n<ul>\n" 
-
-        for i, ruta in enumerate(vehiculo[1]):
-            ruta_formateada = f"Ruta {i + 1}: {' -> '.join(map(str, ruta))}"
-            salida_rutas += f"  <li>{ruta_formateada}</li>\n"  
-
-        salida_rutas += "</ul>\n"  
-
-    coste_total = round(coste_total, 2)
-
-    resultados = {
-        "costes": f"{coste_total}€",
-        "iteraciones": 50,
-        "rutas": salida_rutas,  
-        "Modelo_mejor_resultado": "ACO",
-    }
-
-    return render_template('caso1.html', titulo="Caso 1", map_file=map_path, resultados=resultados)
+    resultados, map_path = generar_casos(caso = 3)
+    return render_template('caso1.html', titulo="Caso 3", map_file=map_path, resultados=resultados)
 
 @app.route('/apartado4')
 def apartado4():
-    file_path = "static/excels/df_location.xlsx"  # Asegúrate de colocar tu archivo Excel aquí
-    df = pd.read_excel(file_path)
-
-    # Asegurar que las columnas sean correctas
-    df.columns = df.columns.str.strip()
-
-    coordenadas_clientes = {
-        int(row["Cliente"].replace("Cliente_", "")) - 1: (row["Latitud"], row["Longitud"])
-        for _, row in df.iterrows() if isinstance(row["Cliente"], str) and "Cliente_" in row["Cliente"]
-    }
-
-    # Agregar el almacén con clave 20
-    almacen = df[df["Cliente"] == "Almacén"][["Latitud", "Longitud"]].values
-    if len(almacen) > 0:
-        coordenadas_clientes[20] = tuple(almacen[0])  
-
-    # Usar la ubicación del almacén como centro del mapa
-    start_location = coordenadas_clientes.get(20, list(coordenadas_clientes.values())[0])
-    m = folium.Map(location=start_location, zoom_start=13)
-
-    resultado = c.start_df(caso = 4)
-    if resultado is None:
-        raise ValueError("La función ACO devolvió None")
-    rutas, coste_total = resultado
-
-
-    for vehiculo, rutas_por_vehiculo in rutas:
-        for ruta in rutas_por_vehiculo:
-            ruta = [cliente for cliente in ruta if cliente != 0]  # REVISION
-            coordenadas = [coordenadas_clientes.get(cliente, start_location) for cliente in ruta]
-
-            # Color aleatorio para la linea que traza la ruta
-            color = "#{:06x}".format(random.randint(0, 0xFFFFFF))
-            folium.PolyLine(coordenadas, color=color, weight=2.5, opacity=0.8).add_to(m)
-
-    for cliente, coords in coordenadas_clientes.items():
-        if cliente == 20:
-            nombre = "Almacén"
-            color = "red"  
-        else:
-            nombre = f"Cliente {cliente + 1}"  # Sumamos 1 solo para la visualización
-            color = "blue"  # Azul para clientes
-        
-        folium.Marker(
-            location=coords,
-            popup=nombre,
-            icon=folium.Icon(color=color, icon="info-sign"),
-        ).add_to(m)
-
-    map_path = "static/map.html"
-    m.save(map_path)
-
-    salida_rutas = ""
-    #Lo dejamos bonicos las rutas
-    for transporte in rutas:
-        id_vehiculo = int(transporte[0])  
-        salida_rutas += f"<h3>Vehículo {transporte}</h3>\n<ul>\n" 
-
-        for i, ruta in enumerate(vehiculo[1]):
-            ruta_formateada = f"Ruta {i + 1}: {' -> '.join(map(str, ruta))}"
-            salida_rutas += f"  <li>{ruta_formateada}</li>\n"  
-
-        salida_rutas += "</ul>\n"  
-
-    coste_total = round(coste_total, 2)
-
-    resultados = {
-        "costes": f"{coste_total}€",
-        "iteraciones": 50,
-        "rutas": salida_rutas,  
-        "Modelo_mejor_resultado": "ACO",
-    }
-
-    return render_template('caso1.html', titulo="Caso 1", map_file=map_path, resultados=resultados)
+    resultados, map_path = generar_casos(caso = 4)
+    return render_template('caso1.html', titulo="Caso 4", map_file=map_path, resultados=resultados)
 
 
 
