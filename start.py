@@ -105,7 +105,7 @@ def modificar_datos(filename):
 
 
 def generar_casos(caso=1):
-        # Localizacion de cada cliente
+    # Localizacion de cada cliente
     file_path = "static/excels/df_location.xlsx"  # Asegúrate de colocar tu archivo Excel aquí
     df = pd.read_excel(file_path)
 
