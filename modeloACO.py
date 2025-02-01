@@ -3,25 +3,15 @@ import pandas as pd
 import random
 import matplotlib.pyplot as plt
 
-def ACO():
-
-    df_order_historic_demand = pd.read_excel('C:/Users/JWinn01/Desktop/IABD/material/datos/Datos_P1/df_historic_order_demand.xlsx')
-    df_distances = pd.read_excel('C:/Users/JWinn01/Desktop/IABD/material/datos/Datos_P1/df_distance_km.xlsx')
-    df_distance_min = pd.read_excel('C:/Users/JWinn01/Desktop/IABD/material/datos/Datos_P1/df_distance_min.xlsx')
-    df_location = pd.read_excel('C:/Users/JWinn01/Desktop/IABD/material/datos/Datos_P1/df_location.xlsx')
-    df_customers = pd.read_excel('C:/Users/JWinn01/Desktop/IABD/material/datos/Datos_P1/df_orders.xlsx')
-    df_vehicles = pd.read_excel('C:/Users/JWinn01/Desktop/IABD/material/datos/Datos_P1/df_vehicle.xlsx')
-
-
-    #cambiar posicion de almacen por mas comodidad
+def ACO(caso, df_distances, df_vehicles, df_customers):
+    #Inicio de la manipulacion de datos para obtener el mejor coste
 
     # Mostrar las primeras filas para verificar el contenido original
-    print("Datos originales:")
-    print(df_distances.head())
-
+    #print("Datos originales:")
+    #print(df_distances.head())
 
     # Parámetros de ACO
-    num_vehiculos = 10
+    num_vehiculos = 6
     num_iterations = 100
     alpha = 1.0
     beta = 2.0
@@ -30,6 +20,12 @@ def ACO():
 
     n_nodes = len(df_customers)+1
     pheromone_matrix = np.ones((n_nodes, n_nodes))
+
+    if caso == 2 :
+        num_vehiculos = 3
+        print(df_vehicles)
+    elif caso == 3:
+        return
 
     def calculo_Probabilidad(current_node, unvisited_nodes, pheromones, df_distances):
         probabilities = []
@@ -53,42 +49,66 @@ def ACO():
         
         return probabilities
 
-    # Función para construir solución por una hormiga
-    def solucion_Vehiculo(df_distances, df_vehicles, orders):
-        solution = []  
-        remaining_customers = set(range(n_nodes - 1))  #contamos cuantos clientes van quedando
-        depot = n_nodes - 1  # indice del almacen
+    def solucion_Vehiculo(df_distances, df_vehicles_shuffled, orders, autonomia_restante=None):
+        solution = []
+        remaining_customers = set(range(20))
+        depot = 20
 
-        for _, vehicle in df_vehicles.iterrows():  
-            vehicle_routes = []  
+        if autonomia_restante is None:
+            autonomia_restante = {row["vehiculo_id"]: row["autonomia_km"] for _, row in df_vehicles_shuffled.iterrows()}
+
+        for _, vehicle in df_vehicles_shuffled.iterrows():  # Usar el DataFrame reordenado
+            vehicle_id = vehicle["vehiculo_id"]
+            vehicle_routes = []
             vehicle_capacity = vehicle["capacidad_kg"]
+            current_autonomy = autonomia_restante[vehicle_id]
 
-            while remaining_customers:
-                current_route = [depot]  # Inicia en el depósito
+            while remaining_customers and current_autonomy > 0:
+                current_route = [depot]  # Inicia en el almacén
                 current_capacity = vehicle_capacity
                 current_node = depot
+                total_distance = 0
+
                 while remaining_customers:
-                    unvisited_nodes = [node for node in remaining_customers if orders[node] <= current_capacity]
-                    if not unvisited_nodes:  # No hay clientes factibles
+                    unvisited_nodes = [
+                        node for node in remaining_customers
+                        if orders[node] <= current_capacity 
+                        and (total_distance + df_distances.iloc[current_node, node] + df_distances.iloc[node, depot]) <= current_autonomy
+                    ]
+
+                    if not unvisited_nodes:
                         break
 
                     probabilities = calculo_Probabilidad(current_node, unvisited_nodes, pheromone_matrix, df_distances)
                     next_node = np.random.choice(unvisited_nodes, p=probabilities)
+
+                    distance_to_next = df_distances.iloc[current_node, next_node]
+                    total_distance += distance_to_next
+                    current_autonomy -= distance_to_next
 
                     current_route.append(next_node)
                     current_capacity -= orders[next_node]
                     remaining_customers.remove(next_node)
                     current_node = next_node
 
-                current_route.append(depot) 
-                if len(current_route) > 2: 
-                    vehicle_routes.append(current_route)
+                # Verificar si se agregaron clientes a la ruta
+                if len(current_route) == 1:  # Solo el almacén, no hay clientes
+                    break  # Salir del bucle externo para este vehículo
+                else:
+                    # Regresar al almacén y actualizar autonomía
+                    distance_to_depot = df_distances.iloc[current_node, depot]
+                    current_autonomy -= distance_to_depot
+                    current_route.append(depot)
+                    if len(current_route) > 2:
+                        vehicle_routes.append(current_route)
 
-            if vehicle_routes:  
-                solution.append((vehicle["vehiculo_id"], vehicle_routes))
-        return solution
+                # Actualizar autonomía restante después de cada ruta
+                autonomia_restante[vehicle_id] = current_autonomy
 
+            if vehicle_routes:
+                solution.append((vehicle_id, vehicle_routes))
 
+        return solution, autonomia_restante
 
     # costo por vehiculo
     def calculo_Coste(solution, df_distances, df_vehicles):
@@ -107,62 +127,29 @@ def ACO():
         return total_cost, vehicle_costes
 
 
-    def crear_Solucion(pheromones, df_distances, vehicle_capacity, orders):
-        solution = []
-        remaining_customers = set(range(1, n_nodes))  
-        while remaining_customers:
-            current_route = [0]  # "Decimos aqui desde donde empezamos" por ende decimos el almacen
-            current_capacity = vehicle_capacity
-            current_node = 0
-
-            while remaining_customers:
-                unvisited_nodes = [node for node in remaining_customers if orders[node] <= current_capacity]
-                if not unvisited_nodes:  # Evitar excepciones
-                    break
-
-                # Llamada a funcion T2
-                probabilities = calculo_Probabilidad(current_node, unvisited_nodes, pheromones, df_distances)
-                next_node = np.random.choice(unvisited_nodes, p=probabilities)
-                
-                current_route.append(next_node)
-                current_capacity -= orders[next_node]
-                remaining_customers.remove(next_node)
-                current_node = next_node
-
-            current_route.append(0)  # regresamos hacia el almacen
-            solution.append(current_route)
-        return solution
-
-
-    # costo de una solución
-    def coste(solution, df_distances, price_per_km):
-        total_cost = 0
-        for route in solution:
-            route_cost = sum(df_distances.iloc[route[i], route[i + 1]] for i in range(len(route) - 1))
-            total_cost += route_cost * price_per_km
-        return total_cost
-
-
 
     # Output
     solucion_optima = None
     mejor_precio = float('inf')
 
     for iteration in range(num_iterations):
+        # Reordenar aleatoriamente los vehículos en cada iteración
+        df_vehicles_shuffled = df_vehicles.sample(frac=1).reset_index(drop=True)
+
         soluciones = []
         costes = []
 
-        #Soluciones distintas, revisar para posibles mejores 
         for _ in range(num_vehiculos):
-            solution = solucion_Vehiculo( df_distances, df_vehicles, df_customers["order_demand"])
-            total_cost, vehicle_costes = calculo_Coste(solution, df_distances, df_vehicles)
+            solution, _ = solucion_Vehiculo(df_distances, df_vehicles_shuffled, df_customers["order_demand"], None)
+            total_cost, _ = calculo_Coste(solution, df_distances, df_vehicles_shuffled)
             soluciones.append(solution)
             costes.append(total_cost)
-            # Actualizar mejor solución
+
             if total_cost < mejor_precio:
                 mejor_precio = total_cost
                 solucion_optima = solution
 
+        # Actualizar feromonas
         pheromone_matrix *= (1 - rho)
         for solution, cost in zip(soluciones, costes):
             for vehicle_name, routes in solution:
@@ -170,23 +157,7 @@ def ACO():
                     for i in range(len(route) - 1):
                         pheromone_matrix[route[i]][route[i + 1]] += Q / cost
 
-    df_customers = pd.concat( #Añadimos esto(error de indice si quitamos esto)
-        [pd.DataFrame({"Cliente": ["Almacén"], "order_demand": [0]}), df_customers],
-        ignore_index=True
-    )
-    print("\nMejor solución encontrada:")
-    
-    print((solucion_optima))
-    #print(mejor_precio)
-    """
-    for vehicle_name, routes in solucion_optima:
-        print(f"Vehículo: {vehicle_name}")
-        for i, route in enumerate(routes):
-            print(df_customers.iloc)
-            clientes = [df_customers.iloc[node]['cliente'] for node in route]
-            print(f"  Ruta {i + 1}: {clientes}")
-    print(f"Costo total: {mejor_precio}") """
+    print(solucion_optima, mejor_precio)
+    return solucion_optima, mejor_precio
 
-    return solucion_optima , mejor_precio
-
-ACO()
+#ACO()
