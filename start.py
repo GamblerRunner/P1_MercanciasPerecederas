@@ -2,7 +2,7 @@ from flask import Flask, render_template, redirect, url_for, request
 import os
 import pandas as pd
 import folium
-import Notebooks.modeling_final.Casos as c
+import pagVisual.Casos as c
 import chardet
 import numpy as np
 import random
@@ -47,9 +47,7 @@ def ver_datos(filename):
             result = chardet.detect(f.read())
             encoding = result['encoding']
 
-        if filename.endswith('.csv'):
-            df = pd.read_csv(file_path, encoding=encoding)
-        elif filename.endswith('.xlsx'):
+        if filename.endswith('.xlsx'):
             df = pd.read_excel(file_path)
         else:
             return render_template('error.html', message=f"El archivo '{filename}' no es un formato válido.")
@@ -59,48 +57,6 @@ def ver_datos(filename):
 
         return render_template('ver_datos.html', filename=filename, data=data, columns=columns)
     except Exception as e:
-        return render_template('error.html', message=f"Ocurrió un error al procesar el archivo: {str(e)}")
-
-@app.route('/modificar_datos/<filename>', methods=['GET', 'POST'])
-def modificar_datos(filename):
-    csv_folder = os.path.join(app.static_folder, 'excels')
-    file_path = os.path.join(csv_folder, filename)
-
-    if not os.path.exists(file_path):
-        return render_template('error.html', message=f"El archivo '{filename}' no existe en la carpeta csvs.")
-
-    try:
-        if request.method == 'POST':
-            # Procesar los datos enviados por el formulario
-            updated_data = request.form.to_dict(flat=False)
-            rows = []
-            for i in range(len(updated_data[list(updated_data.keys())[0]])):
-                row = {col: updated_data[f"data[{i}][{col}]"][0] for col in updated_data if f"data[{i}]" in col}
-                rows.append(row)
-            
-            # Convertir a DataFrame y guardar
-            df = pd.DataFrame(rows)
-            if filename.endswith('.csv'):
-                df.to_csv(file_path, index=False)
-            elif filename.endswith('.xlsx'):
-                df.to_excel(file_path, index=False)
-            return redirect(url_for('ver_datos', filename=filename))
-
-        # Leer los datos actuales del archivo
-        if filename.endswith('.csv'):
-            df = pd.read_csv(file_path)
-        elif filename.endswith('.xlsx'):
-            df = pd.read_excel(file_path)
-        else:
-            return render_template('error.html', message=f"El archivo '{filename}' no es un formato válido.")
-
-        # Agregar índices a los datos para Jinja2
-        data = [{'index': idx, **row} for idx, row in enumerate(df.to_dict(orient='records'))]
-        columns = df.columns.tolist()
-
-        return render_template('modificar_datos.html', filename=filename, data=data, columns=columns)
-    except Exception as e:
-        print(e)
         return render_template('error.html', message=f"Ocurrió un error al procesar el archivo: {str(e)}")
 
 

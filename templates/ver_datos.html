@@ -12,13 +12,14 @@
             background-color: #f4f4f9;
             color: #333;
         }
-
+    
         h1 {
             text-align: center;
             margin-top: 20px;
             color: #444;
+            font-size: 24px; /* Tamaño de la cabecera */
         }
-
+    
         .container {
             width: 90%;
             margin: 20px auto;
@@ -27,36 +28,59 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             border-radius: 10px;
         }
-
+    
+        .table-container {
+            width: 100%;
+            overflow-x: auto; /* Habilita scroll horizontal */
+            margin-top: 20px;
+        }
+    
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            table-layout: fixed; /* Celdas proporcionales */
         }
-
+    
         table th, table td {
             text-align: left;
-            padding: 12px;
+            padding: 8px; /* Reduce el padding para compactar */
             border: 1px solid #ddd;
+            word-wrap: break-word; /* Ajusta texto largo */
+            font-size: 12px; /* Tamaño más pequeño para el texto */
         }
-
+    
         table th {
             background-color: #007bff;
             color: white;
+            font-size: 11px; /* Cabeceras ligeramente más grandes */
         }
-
+    
         table tr:nth-child(even) {
             background-color: #f9f9f9;
         }
-
+    
         table tr:hover {
             background-color: #f1f1f1;
         }
-
+    
+        input[type="text"] {
+            width: 100%;
+            border: none;
+            background-color: transparent;
+            font-size: 12px; /* Texto más pequeño en las celdas */
+            padding: 4px;
+            box-sizing: border-box;
+        }
+    
+        input[type="text"]:focus {
+            outline: none;
+            background-color: #f9f9f9;
+        }
+    
         .button {
             display: inline-block;
-            padding: 10px 20px;
-            font-size: 16px;
+            padding: 8px 16px; /* Botones más pequeños */
+            font-size: 14px; /* Tamaño del texto en los botones */
             color: white;
             background-color: #007bff;
             border: none;
@@ -66,15 +90,16 @@
             margin-top: 20px;
             transition: background-color 0.3s;
         }
-
+    
         .button:hover {
             background-color: #0056b3;
         }
-
+    
         .button-container {
             text-align: center;
             margin-top: 20px;
         }
+    
     </style>
 </head>
 <body>
@@ -101,9 +126,6 @@
 
         <div class="button-container">
             <a href="{{ url_for('datos') }}" class="button">Volver a la lista de archivos</a>
-            <form action="{{ url_for('modificar_datos', filename=filename) }}" method="GET" style="display: inline;">
-                <button type="submit" class="button">Modificar Tabla</button>
-            </form>
         </div>
     </div>
 </body>
