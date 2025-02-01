@@ -7,9 +7,9 @@ import matplotlib.pyplot as plt
 
 
 def start_df(caso = 1):
-    df_distances = pd.read_excel('../../static/excels/df_distance_km.xlsx')
-    df_customers = pd.read_excel('../../static/excels/df_orders.xlsx')
-    df_vehicles = pd.read_excel('../../static/excels/df_vehicle.xlsx')
+    df_distances = pd.read_excel('static/excels/df_distance_km.xlsx')
+    df_customers = pd.read_excel('static/excels/df_orders.xlsx')
+    df_vehicles = pd.read_excel('static/excels/df_vehicle.xlsx')
 
     df_vehicles = df_vehicles.sort_values(by="costo_km", ascending=True).reset_index(drop=True)
 

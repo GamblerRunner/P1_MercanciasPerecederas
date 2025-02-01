@@ -162,16 +162,14 @@ def generar_casos(caso=1):
     m.save(map_path)
 
     salida_rutas = ""
-    #Lo dejamos bonicos las rutas
-    for transporte in rutas:
-        id_vehiculo = int(transporte[0])  
-        salida_rutas += f"<h3>Vehículo {transporte}</h3>\n<ul>\n" 
+    #Manejar como se ven los resultados
+    for transporte in rutas:  
+        salida_rutas += f"Vehículo {int(transporte[0])}" 
 
         for i, ruta in enumerate(transporte[1]):
             ruta_formateada = f"Ruta {i + 1}: {' -> '.join(map(str, ruta))}"
-            salida_rutas += f"  <li>{ruta_formateada}</li>\n"  
+            salida_rutas += f"  {ruta_formateada}"  
 
-        salida_rutas += "</ul>\n"  
 
     coste_total = round(coste_total, 2)
 
